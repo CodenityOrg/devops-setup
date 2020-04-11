@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  api:
+    image: #image name
+    container_name: nodejs
+    env_file: .env
+    environment:
+      # - MONGO_HOSTNAME=db
+      # - MONGO_PORT=$MONGO_PORT
+      # - MONGO_DB=$MONGO_DB
+    ports:
+      # - "8005:3001"
+    networks:
+      - app-network
+    command: #./wait-for.sh db:27017 -- /home/node/app/node_modules/.bin/nodemon bin/www
+  webapp:
+    container_name: webapp
+    image: #image name
+    environment:
+      #- REACT_APP_API_URL=$REACT_APP_API_URL
+    ports:
+      #- "8006:80"
+    labels:
+      NAME: "webapp"
+    networks:
+      - app-network
+  db:
+    image: mongo:4.1.8-xenial
+    container_name: db
+    restart: unless-stopped
+    #env_file: .env
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  dbdata:
+  node_modules:
